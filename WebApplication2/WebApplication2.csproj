@@ -93,6 +93,7 @@
     <TypeScriptCompile Include="game.ts" />
     <Content Include="Global.asax" />
     <Content Include="HtmlPage1.html" />
+    <Content Include="HtmlPage2.html" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <Content Include="Scripts\jquery.signalR-1.0.0.js" />
@@ -102,6 +103,10 @@
     <Content Include="style.css" />
     <TypeScriptCompile Include="tests\LineHelper.ts" />
     <TypeScriptCompile Include="tests\Getdirection.ts" />
+    <TypeScriptCompile Include="tests\Bike_MoveTo.ts" />
+    <Content Include="tests\Bike.js">
+      <DependentUpon>Bike_MoveTo.ts</DependentUpon>
+    </Content>
     <Content Include="tests\Getdirection.js">
       <DependentUpon>Getdirection.ts</DependentUpon>
     </Content>

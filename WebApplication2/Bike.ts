@@ -1,15 +1,43 @@
 class Bike {
-    Positions: Coordinate[];
+    public Positions: Coordinate[] = [];
 
     constructor(startPosition: Coordinate, direction: Direction) {
+        //console.log("Hello", startPosition);
+
         this.Positions.push(startPosition);
         this.Positions.push(startPosition.GetNext(direction));
+        //console.log("local pos", positions);
+        console.log("pos value", this.Positions[0]);
+    }
+
+    ContinueMoving() {
+        var direction = LineHelper.GetDirection(this.Positions);
+        var lastPos = this.Positions.slice(-1)[0];
+        var newPos = lastPos.GetNext(direction);
+        this.MoveTo(newPos, lastPos);
+        //console.log(this.Positions.toString());
+    }
+
+    MoveTo(newPosition: Coordinate, previousPosition: Coordinate) {
+
+        var indexOfPrevious = this.Positions.map((coord: Coordinate) => {
+            return coord.toString();
+        }).indexOf(previousPosition.toString());
+
+        if (indexOfPrevious < this.Positions.length - 1) {
+            console.log("out of sync");
+            // we are out of sync and must reimplement path
+            this.Positions.splice(indexOfPrevious + 1, this.Positions.length - indexOfPrevious);
+        }
+
+        this.Positions.push(newPosition);
     }
 
 }
 
 class LineHelper {
-    GetDirection(coords: Coordinate[]): Direction {
+    static GetDirection(coordsArray: Coordinate[]): Direction {
+        var coords = coordsArray.slice(0);
         var current: Coordinate = coords.pop();
         var previous: Coordinate = coords.pop();
 
@@ -32,7 +60,7 @@ class LineHelper {
         return Direction.Unkown;
     }
 
-    GetLines(coordinates: Coordinate[]): Line[] {
+    static GetLines(coordinates: Coordinate[]): Line[] {
         var lines: Line[] = [];
         var lastLine: Line = null;
 
@@ -78,27 +106,36 @@ class Coordinate {
         this.Y = y;
     }
 
+    static FromString(str: string) {
+        var coordsFromString = str.split(",");
+        var x: number = +coordsFromString[0];
+        var y: number = +coordsFromString[1];
+        return new Coordinate(x,y);
+    }
+
     GetNext(direction: Direction) {
         if (direction == Direction.Up) {
-            return new Coordinate(this.X, this.Y--);
+            return new Coordinate(this.X, this.Y - 1);
         }
 
         if (direction == Direction.Down) {
-            return new Coordinate(this.X, this.Y++);
+            return new Coordinate(this.X, this.Y + 1);
         }
 
         if (direction == Direction.Right) {
-            return new Coordinate(this.X++, this.Y);
+            return new Coordinate(this.X + 1, this.Y);
         }
 
         if (direction == Direction.Left) {
-            return new Coordinate(this.X--, this.Y);
+            return new Coordinate(this.X - 1, this.Y);
         }
 
         return this;
     }
 
-
+    toString() {
+        return this.X + "," + this.Y;
+    }
 }
 
 enum Direction {
@@ -109,3 +146,12 @@ enum Direction {
     Unkown
 }
 
+var b = new Bike(new Coordinate(0, 0), Direction.Down);
+console.log(b);
+b.ContinueMoving();
+b.ContinueMoving();
+b.ContinueMoving();
+
+b.MoveTo(new Coordinate(1, 3), new Coordinate(0, 3));
+
+console.log(b);

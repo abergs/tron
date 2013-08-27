@@ -1,15 +1,43 @@
 var Bike = (function () {
     function Bike(startPosition, direction) {
+        this.Positions = [];
+        //console.log("Hello", startPosition);
         this.Positions.push(startPosition);
         this.Positions.push(startPosition.GetNext(direction));
+
+        //console.log("local pos", positions);
+        console.log("pos value", this.Positions[0]);
     }
+    Bike.prototype.ContinueMoving = function () {
+        var direction = LineHelper.GetDirection(this.Positions);
+        var lastPos = this.Positions.slice(-1)[0];
+        var newPos = lastPos.GetNext(direction);
+        this.MoveTo(newPos, lastPos);
+        //console.log(this.Positions.toString());
+    };
+
+    Bike.prototype.MoveTo = function (newPosition, previousPosition) {
+        var indexOfPrevious = this.Positions.map(function (coord) {
+            return coord.toString();
+        }).indexOf(previousPosition.toString());
+
+        if (indexOfPrevious < this.Positions.length - 1) {
+            console.log("out of sync");
+
+            // we are out of sync and must reimplement path
+            this.Positions.splice(indexOfPrevious + 1, this.Positions.length - indexOfPrevious);
+        }
+
+        this.Positions.push(newPosition);
+    };
     return Bike;
 })();
 
 var LineHelper = (function () {
     function LineHelper() {
     }
-    LineHelper.prototype.GetDirection = function (coords) {
+    LineHelper.GetDirection = function (coordsArray) {
+        var coords = coordsArray.slice(0);
         var current = coords.pop();
         var previous = coords.pop();
 
@@ -32,7 +60,7 @@ var LineHelper = (function () {
         return Direction.Unkown;
     };
 
-    LineHelper.prototype.GetLines = function (coordinates) {
+    LineHelper.GetLines = function (coordinates) {
         var lines = [];
         var lastLine = null;
 
@@ -69,24 +97,35 @@ var Coordinate = (function () {
         this.X = x;
         this.Y = y;
     }
+    Coordinate.FromString = function (str) {
+        var coordsFromString = str.split(",");
+        var x = +coordsFromString[0];
+        var y = +coordsFromString[1];
+        return new Coordinate(x, y);
+    };
+
     Coordinate.prototype.GetNext = function (direction) {
         if (direction == Direction.Up) {
-            return new Coordinate(this.X, this.Y--);
+            return new Coordinate(this.X, this.Y - 1);
         }
 
         if (direction == Direction.Down) {
-            return new Coordinate(this.X, this.Y++);
+            return new Coordinate(this.X, this.Y + 1);
         }
 
         if (direction == Direction.Right) {
-            return new Coordinate(this.X++, this.Y);
+            return new Coordinate(this.X + 1, this.Y);
         }
 
         if (direction == Direction.Left) {
-            return new Coordinate(this.X--, this.Y);
+            return new Coordinate(this.X - 1, this.Y);
         }
 
         return this;
+    };
+
+    Coordinate.prototype.toString = function () {
+        return this.X + "," + this.Y;
     };
     return Coordinate;
 })();
@@ -99,3 +138,13 @@ var Direction;
     Direction[Direction["Left"] = 3] = "Left";
     Direction[Direction["Unkown"] = 4] = "Unkown";
 })(Direction || (Direction = {}));
+
+var b = new Bike(new Coordinate(0, 0), Direction.Down);
+console.log(b);
+b.ContinueMoving();
+b.ContinueMoving();
+b.ContinueMoving();
+
+b.MoveTo(new Coordinate(1, 3), new Coordinate(0, 3));
+
+console.log(b);
