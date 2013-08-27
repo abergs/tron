@@ -9,6 +9,29 @@ var Bike = (function () {
 var LineHelper = (function () {
     function LineHelper() {
     }
+    LineHelper.prototype.GetDirection = function (coords) {
+        var current = coords.pop();
+        var previous = coords.pop();
+
+        if (!previous || !current) {
+            return Direction.Unkown;
+        }
+
+        if (current.X < previous.X)
+            return Direction.Left;
+
+        if (current.X > previous.X)
+            return Direction.Right;
+
+        if (current.Y < previous.Y)
+            return Direction.Up;
+
+        if (current.Y > previous.Y)
+            return Direction.Down;
+
+        return Direction.Unkown;
+    };
+
     LineHelper.prototype.GetLines = function (coordinates) {
         var lines = [];
         var lastLine = null;
@@ -22,7 +45,6 @@ var LineHelper = (function () {
                     lastLine.End = coordinate;
                 } else {
                     // New line
-                    //lines.push(lastLine);
                     lastLine = new Line(lastLine.End, coordinate);
                     lines.push(lastLine);
                 }
@@ -75,4 +97,5 @@ var Direction;
     Direction[Direction["Right"] = 1] = "Right";
     Direction[Direction["Down"] = 2] = "Down";
     Direction[Direction["Left"] = 3] = "Left";
+    Direction[Direction["Unkown"] = 4] = "Unkown";
 })(Direction || (Direction = {}));

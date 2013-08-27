@@ -54,9 +54,11 @@ test("GetLines returns 2 lines when having three coords", function () {
 test("Make sure reference is kept", function () {
     var lh = new LineHelper();
 
-    var coords = [new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(1, 1), new Coordinate(2, 1)];
+    var coords = [new Coordinate(0, 0), new Coordinate(0, 1), new Coordinate(1, 1), new Coordinate(2, 1), new Coordinate(2, 2), new Coordinate(2, 3)];
 
     var lines = lh.GetLines(coords);
+
+    ok(3 == lines.length);
 
     ok(lines[0].Start.X == 0, "start1x");
     ok(lines[0].Start.Y == 0, "start1y");
@@ -67,4 +69,9 @@ test("Make sure reference is kept", function () {
     ok(lines[1].Start.Y == 1);
     ok(lines[1].End.X == 2);
     ok(lines[1].End.Y == 1);
+
+    ok(lines[2].Start.X == 2);
+    ok(lines[2].Start.Y == 1);
+    ok(lines[2].End.X == 2);
+    ok(lines[2].End.Y == 3);
 });

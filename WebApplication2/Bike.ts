@@ -9,6 +9,29 @@ class Bike {
 }
 
 class LineHelper {
+    GetDirection(coords: Coordinate[]): Direction {
+        var current: Coordinate = coords.pop();
+        var previous: Coordinate = coords.pop();
+
+        if (!previous || !current) {
+            return Direction.Unkown;
+        }
+
+        if (current.X < previous.X)
+            return Direction.Left;
+
+        if (current.X > previous.X)
+            return Direction.Right;
+
+        if (current.Y < previous.Y)
+            return Direction.Up;
+
+        if (current.Y > previous.Y)
+            return Direction.Down;
+
+        return Direction.Unkown;
+    }
+
     GetLines(coordinates: Coordinate[]): Line[] {
         var lines: Line[] = [];
         var lastLine: Line = null;
@@ -24,7 +47,6 @@ class LineHelper {
                     lastLine.End = coordinate;
                 } else {
                     // New line
-                    //lines.push(lastLine);
                     lastLine = new Line(lastLine.End, coordinate);
                     lines.push(lastLine);
                 }
@@ -83,6 +105,7 @@ enum Direction {
     Up,
     Right,
     Down,
-    Left
+    Left,
+    Unkown
 }
 

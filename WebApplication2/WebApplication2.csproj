@@ -101,6 +101,10 @@
     <Content Include="Scripts\typings\qunit\qunit.d.ts" />
     <Content Include="style.css" />
     <TypeScriptCompile Include="tests\LineHelper.ts" />
+    <TypeScriptCompile Include="tests\Getdirection.ts" />
+    <Content Include="tests\Getdirection.js">
+      <DependentUpon>Getdirection.ts</DependentUpon>
+    </Content>
     <Content Include="tests\LineHelper.js">
       <DependentUpon>LineHelper.ts</DependentUpon>
     </Content>
