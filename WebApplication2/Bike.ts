@@ -1,21 +1,27 @@
 class Bike {
     public Positions: Coordinate[] = [];
-
+    public Width: number = 4;
+    public Height: number = 4;
     constructor(startPosition: Coordinate, direction: Direction) {
-        //console.log("Hello", startPosition);
-
         this.Positions.push(startPosition);
         this.Positions.push(startPosition.GetNext(direction));
-        //console.log("local pos", positions);
-        console.log("pos value", this.Positions[0]);
+    }
+
+    Turn(direction: Direction) {
+        var lastPosition: Coordinate = this.GetLastPosition();
+        var nextPosition: Coordinate = lastPosition.GetNext(direction);
+        this.MoveTo(nextPosition, lastPosition);
+    }
+
+    private GetLastPosition(): Coordinate {
+        return this.Positions.slice(-1)[0];
     }
 
     ContinueMoving() {
         var direction = LineHelper.GetDirection(this.Positions);
-        var lastPos = this.Positions.slice(-1)[0];
+        var lastPos = this.GetLastPosition();
         var newPos = lastPos.GetNext(direction);
         this.MoveTo(newPos, lastPos);
-        //console.log(this.Positions.toString());
     }
 
     MoveTo(newPosition: Coordinate, previousPosition: Coordinate) {
@@ -33,6 +39,9 @@ class Bike {
         this.Positions.push(newPosition);
     }
 
+    GetLines():Line[] {
+        return LineHelper.GetLines(this.Positions);
+    }
 }
 
 class LineHelper {
@@ -86,7 +95,6 @@ class LineHelper {
 }
 
 class Line {
-
     Start: Coordinate;
     End: Coordinate;
 
@@ -94,7 +102,6 @@ class Line {
         this.Start = start;
         this.End = end;
     }
-
 }
 
 class Coordinate {

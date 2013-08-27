@@ -1,19 +1,26 @@
 var Bike = (function () {
     function Bike(startPosition, direction) {
         this.Positions = [];
-        //console.log("Hello", startPosition);
+        this.Width = 4;
+        this.Height = 4;
         this.Positions.push(startPosition);
         this.Positions.push(startPosition.GetNext(direction));
-
-        //console.log("local pos", positions);
-        console.log("pos value", this.Positions[0]);
     }
+    Bike.prototype.Turn = function (direction) {
+        var lastPosition = this.GetLastPosition();
+        var nextPosition = lastPosition.GetNext(direction);
+        this.MoveTo(nextPosition, lastPosition);
+    };
+
+    Bike.prototype.GetLastPosition = function () {
+        return this.Positions.slice(-1)[0];
+    };
+
     Bike.prototype.ContinueMoving = function () {
         var direction = LineHelper.GetDirection(this.Positions);
-        var lastPos = this.Positions.slice(-1)[0];
+        var lastPos = this.GetLastPosition();
         var newPos = lastPos.GetNext(direction);
         this.MoveTo(newPos, lastPos);
-        //console.log(this.Positions.toString());
     };
 
     Bike.prototype.MoveTo = function (newPosition, previousPosition) {
@@ -29,6 +36,10 @@ var Bike = (function () {
         }
 
         this.Positions.push(newPosition);
+    };
+
+    Bike.prototype.GetLines = function () {
+        return LineHelper.GetLines(this.Positions);
     };
     return Bike;
 })();
