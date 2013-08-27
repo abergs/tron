@@ -9,6 +9,7 @@ var keys = {
     start_game: [13, 32]
 };
 
+//
 var Player = (function () {
     function Player() {
         this.Id = "";
@@ -289,4 +290,3 @@ chat.client.start = function (gameData) {
 
     game.start();
 };
-//# sourceMappingURL=file1.js.map

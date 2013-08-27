@@ -9,10 +9,11 @@ var keys = {
     start_game: [13, 32]
 };
 
+//
 
 class Player {
     Id: string = "";
-    color: string = '#92F15F'
+    color: string = '#92F15F';
     current_direction: string = "left";
     Name: string = "Player";
 
