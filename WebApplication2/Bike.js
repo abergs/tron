@@ -1,6 +1,7 @@
 var Bike = (function () {
     function Bike(startPosition, direction) {
         this.Positions = [];
+        this.QuedMovement = [];
         this.Width = 4;
         this.Height = 4;
         this.Positions.push(startPosition);
@@ -9,7 +10,16 @@ var Bike = (function () {
     Bike.prototype.Turn = function (direction) {
         var lastPosition = this.GetLastPosition();
         var nextPosition = lastPosition.GetNext(direction);
-        this.MoveTo(nextPosition, lastPosition);
+
+        var positionTuple = new Tuple(lastPosition, nextPosition);
+
+        var indexOfPreviousQuedMove = this.QuedMovement.map(function (coordTuple) {
+            return coordTuple.toString();
+        }).indexOf(positionTuple.toString());
+
+        if (indexOfPreviousQuedMove == -1) {
+            this.QuedMovement.push(positionTuple);
+        }
     };
 
     Bike.prototype.GetLastPosition = function () {
@@ -17,9 +27,18 @@ var Bike = (function () {
     };
 
     Bike.prototype.ContinueMoving = function () {
-        var direction = LineHelper.GetDirection(this.Positions);
-        var lastPos = this.GetLastPosition();
-        var newPos = lastPos.GetNext(direction);
+        var lastPos = null;
+        var newPos = null;
+
+        if (this.QuedMovement.length == 0) {
+            var direction = LineHelper.GetDirection(this.Positions);
+            lastPos = this.GetLastPosition();
+            newPos = lastPos.GetNext(direction);
+        } else {
+            var quedMove = this.QuedMovement.shift();
+            lastPos = quedMove.Item1;
+            newPos = quedMove.Item2;
+        }
         this.MoveTo(newPos, lastPos);
     };
 
@@ -159,3 +178,16 @@ b.ContinueMoving();
 b.MoveTo(new Coordinate(1, 3), new Coordinate(0, 3));
 
 console.log(b);
+
+var Tuple = (function () {
+    function Tuple(item1, item2) {
+        this.Item1 = null;
+        this.Item2 = null;
+        this.Item1 = item1;
+        this.Item2 = item2;
+    }
+    Tuple.prototype.toString = function () {
+        return this.Item1.toString() + "," + this.Item2.toString();
+    };
+    return Tuple;
+})();

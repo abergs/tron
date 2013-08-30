@@ -13,12 +13,12 @@ var keys = {
 //
 var Player = (function () {
     //Cycle: LightBike = null;
-    function Player() {
+    function Player(startingPos, direction) {
         this.Id = "";
         this.color = '#92F15F';
         this.Name = "Player";
-        this.startingPos = new Coordinate(0, 0);
-        this.startingDirection = Direction.Right;
+        this.startingPos = startingPos;
+        this.startingDirection = direction;
 
         // this.Cycle = new LightBike(this);
         //this.Bike = new Bike(new Coordinate(0,0),Direction.Right);
@@ -98,7 +98,7 @@ var Game = (function () {
         this.usedCoords = [];
         this.started = false;
         this.over = false;
-        this.player = new Player();
+        this.player = new Player(new Coordinate(0, 0), Direction.Unkown);
         this.players = [];
         this.canvas = document.getElementById("the-game");
         this.context = this.canvas.getContext("2d");
@@ -219,7 +219,7 @@ var Game = (function () {
     };
 
     Game.prototype.Draw = function (player) {
-        context.fillStyle = player.color;
+        context.strokeStyle = player.color;
         player.Bike.GetLines().forEach(function (line) {
             context.beginPath();
             context.moveTo(line.Start.X, line.Start.Y);
@@ -317,7 +317,7 @@ chat.client.start = function (gameData) {
 
     game.start();
 };
-var player = new Player();
+var player = new Player(new Coordinate(0, 0), Direction.Right);
 player.Id = "1";
 player.Reset();
 player.color = "#FF0000";
@@ -325,4 +325,13 @@ player.Name = "anders";
 
 game.players.push(player);
 game.player = player;
+
+var player2 = new Player(new Coordinate(200, 100), Direction.Left);
+player2.Id = "2";
+player2.Reset();
+player2.color = "#0000FF";
+player2.Name = "anders";
+
+game.players.push(player2);
+
 game.start();

@@ -1,7 +1,9 @@
 class Bike {
     public Positions: Coordinate[] = [];
+    public QuedMovement: Tuple<Coordinate,Coordinate>[] = [];
     public Width: number = 4;
     public Height: number = 4;
+
     constructor(startPosition: Coordinate, direction: Direction) {
         this.Positions.push(startPosition);
         this.Positions.push(startPosition.GetNext(direction));
@@ -10,7 +12,16 @@ class Bike {
     Turn(direction: Direction) {
         var lastPosition: Coordinate = this.GetLastPosition();
         var nextPosition: Coordinate = lastPosition.GetNext(direction);
-        this.MoveTo(nextPosition, lastPosition);
+
+        var positionTuple = new Tuple<Coordinate, Coordinate>(lastPosition, nextPosition);
+
+        var indexOfPreviousQuedMove = this.QuedMovement.map((coordTuple) => {
+            return coordTuple.toString();
+        }).indexOf(positionTuple.toString());
+
+        if (indexOfPreviousQuedMove == -1) {
+            this.QuedMovement.push(positionTuple);
+        }
     }
 
     private GetLastPosition(): Coordinate {
@@ -18,9 +29,18 @@ class Bike {
     }
 
     ContinueMoving() {
-        var direction = LineHelper.GetDirection(this.Positions);
-        var lastPos = this.GetLastPosition();
-        var newPos = lastPos.GetNext(direction);
+        var lastPos: Coordinate = null;
+        var newPos: Coordinate = null;
+
+        if (this.QuedMovement.length == 0) {
+            var direction = LineHelper.GetDirection(this.Positions);
+            lastPos = this.GetLastPosition();            
+            newPos = lastPos.GetNext(direction);
+        } else {
+            var quedMove = this.QuedMovement.shift();
+            lastPos = quedMove.Item1;
+            newPos = quedMove.Item2;
+        }        
         this.MoveTo(newPos, lastPos);
     }
 
@@ -29,6 +49,8 @@ class Bike {
         var indexOfPrevious = this.Positions.map((coord: Coordinate) => {
             return coord.toString();
         }).indexOf(previousPosition.toString());
+
+        //console.log("indexOfPrev", indexOfPrevious);
 
         if (indexOfPrevious < this.Positions.length - 1) {
             console.log("out of sync");
@@ -162,3 +184,17 @@ b.ContinueMoving();
 b.MoveTo(new Coordinate(1, 3), new Coordinate(0, 3));
 
 console.log(b);
+
+class Tuple<T, T2> {
+    public Item1: T = null;
+    public Item2: T2 = null;
+
+    constructor(item1: T, item2: T2) {
+        this.Item1 = item1;
+        this.Item2 = item2;
+    }    
+
+    toString() {
+        return this.Item1.toString() + "," + this.Item2.toString();
+    }
+}

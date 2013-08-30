@@ -22,10 +22,10 @@ class Player {
     private startingPos: Coordinate;
     private startingDirection: Direction;
     //Cycle: LightBike = null;
-    constructor() {
-        this.startingPos = new Coordinate(0, 0);
-        this.startingDirection = Direction.Right;
-       // this.Cycle = new LightBike(this);
+    constructor(startingPos: Coordinate, direction: Direction) {
+        this.startingPos = startingPos;
+        this.startingDirection = direction;
+        // this.Cycle = new LightBike(this);
         //this.Bike = new Bike(new Coordinate(0,0),Direction.Right);
         this.Reset();
     }
@@ -114,8 +114,8 @@ class Game {
     started: boolean = false;
     over: boolean = false;
 
-    player: Player = new Player();
-    players: Player[] = []
+    player: Player = new Player(new Coordinate(0,0),Direction.Unkown);
+    players: Player[] = [];
 
     canvas: any = document.getElementById("the-game");
     context = this.canvas.getContext("2d");
@@ -239,7 +239,7 @@ class Game {
     }
 
     Draw(player: Player) {
-        context.fillStyle = player.color;
+        context.strokeStyle = player.color;
         player.Bike.GetLines().forEach((line) => {
             context.beginPath();
             context.moveTo(line.Start.X, line.Start.Y);
@@ -248,8 +248,8 @@ class Game {
             //context.lineTo(this.x - (this.width / 2), this.y + (this.height / 2));
             context.stroke();
             context.closePath();
-        });        
-        
+        });
+
         context.fill();
     }
 
@@ -257,14 +257,13 @@ class Game {
         if (this.started && this.over == false) {
             //console.log(this.players);
             this.players.forEach((iPlayer) => {
-
                 iPlayer.Bike.ContinueMoving();
                 this.Draw(iPlayer);
                 //this.usedCoords.push(iPlayer.Cycle.generateCoords());
                 //iPlayer.Cycle.move();
                 //iPlayer.Cycle.draw();
                 //if (this.checkCollision(iPlayer.Cycle)) {
-                    
+
                 //    this.stop(iPlayer);
                 //}
             });
@@ -350,12 +349,21 @@ chat.client.start = function (gameData) {
 
     game.start();
 }
-var player = new Player();
+var player = new Player(new Coordinate(0, 0), Direction.Right);
 player.Id = "1";
-        player.Reset();
-        player.color = "#FF0000";
-        player.Name = "anders";
+player.Reset();
+player.color = "#FF0000";
+player.Name = "anders";
 
 game.players.push(player);
 game.player = player;
+
+var player2 = new Player(new Coordinate(200, 100), Direction.Left);
+player2.Id = "2";
+player2.Reset();
+player2.color = "#0000FF";
+player2.Name = "anders";
+
+game.players.push(player2);
+
 game.start();
